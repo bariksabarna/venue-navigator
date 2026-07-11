@@ -215,10 +215,14 @@ body {
   background: var(--color-bg); position: relative;
 }
 .map-container { flex: 1; overflow: hidden; position: relative; }
-.map-svg { width: 100%; height: 100%; }
+.map-svg {
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, #0f2040 0%, #0a1628 100%);
+}
 .map-node { cursor: pointer; transition: all var(--transition); }
 .map-node:hover circle, .map-node:focus circle { filter: brightness(1.3); }
 .map-node:focus { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 50%; }
+.map-node text { pointer-events: none; font-family: Inter, sans-serif; }
 .map-route-path { stroke-dasharray: 8 4; animation: dashMove 1.5s linear infinite; }
 @keyframes dashMove { to { stroke-dashoffset: -48; } }
 .map-legend {
@@ -228,6 +232,11 @@ body {
 }
 .map-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--color-text-muted); }
 .map-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.map-legend-dot.gate { background: #4a9eff; }
+.map-legend-dot.start { background: #22c55e; }
+.map-legend-dot.amenity { background: #f59e0b; }
+.map-legend-dot.destination { background: #ffd700; }
+.map-legend-dot.elevator { background: #a78bfa; }
 
 /* Map alerts area */
 .map-alerts { padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
@@ -244,6 +253,10 @@ body {
 }
 .a11y-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
 .a11y-panel-title { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; }
+.a11y-panel-desc { font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1rem; }
+.a11y-fieldset { border: none; padding: 0; margin: 0 0 1.25rem 0; }
+.a11y-legend { font-weight: 600; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--color-text); }
+.profile-desc { color: var(--color-text-muted); font-size: 0.75rem; }
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
 .profile-btn {
   display: flex; flex-direction: column; align-items: center; gap: 0.4rem;

@@ -1,17 +1,14 @@
 /**
- * OpsLiteDashboard Component
+ * @fileoverview OpsLiteDashboard Component.
  *
  * A read-only modal dashboard for stadium operations staff showing anonymized,
  * aggregated query-topic counts by zone. No raw query text or user identifiers
  * are stored or displayed — increment-only counters only (SRS §8 item 5).
  *
  * The backdrop is rendered as a proper <button> for keyboard-accessible close
- * behaviour (no jsx-a11y violations).
+ * behaviour (no jsx-a11y violations). Includes focus-trapping when open.
  *
- * @component
- * @param {boolean}  props.isOpen    - Whether the panel is visible.
- * @param {Function} props.onClose   - Callback to close the panel.
- * @param {object[]} props.messages  - Current session messages (used for live topic tallying).
+ * @module OpsLiteDashboard
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -30,20 +27,60 @@ interface OpsLiteDashboardProps {
  */
 export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboardProps) {
   const [stats, setStats] = useState<AggregatedCount[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Focus the close button when panel opens
   useEffect(() => {
-    if (isOpen) closeRef.current?.focus();
+    if (isOpen) {
+      closeRef.current?.focus();
+    }
   }, [isOpen]);
 
   // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
+
+  // Focus Trap
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      const focusableElements = panel.querySelectorAll<HTMLElement>(
+        'button:not([tabindex="-1"]), [href]:not([tabindex="-1"]), input:not([tabindex="-1"]), select:not([tabindex="-1"]), textarea:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => document.removeEventListener('keydown', handleTabKey);
+  }, [isOpen]);
 
   useEffect(() => {
     // Representative baseline data — demo values for a typical match day
@@ -80,12 +117,18 @@ export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboard
   if (!isOpen) return null;
 
   return (
-    <div className="ops-panel" role="dialog" aria-modal="true" aria-labelledby="ops-title">
+    <div
+      ref={panelRef}
+      className="ops-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ops-title"
+    >
       {/* Backdrop: keyboard-accessible button so close is operable without mouse */}
       <button
         type="button"
         className="ops-backdrop"
-        aria-label="Close Operations Dashboard"
+        aria-label="Dismiss operations dashboard"
         onClick={onClose}
         tabIndex={-1}
       />

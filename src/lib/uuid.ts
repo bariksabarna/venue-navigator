@@ -1,6 +1,16 @@
 /**
+ * @fileoverview Unique identifier generation utility.
+ *
+ * Provides a cryptographically secure random UUID generator (RFC 4122 v4)
+ * with a Math.random fallback for environments where crypto is not defined.
+ *
+ * @module uuid
+ */
+
+/**
  * Generates a RFC 4122 v4 UUID string.
  * Uses crypto.randomUUID() when available, falls back to Math.random.
+ *
  * @returns A unique UUID string.
  */
 export function v4(): string {

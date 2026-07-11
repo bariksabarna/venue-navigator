@@ -223,6 +223,7 @@ export function useChat(
 
       // ── Step 9: Cache the response ────────────────────────────────────────
       setCacheEntry(cacheKey, responseText);
+      setCacheEntry(makeCacheKey(clean, 'unknown'), responseText);
 
       // ── Step 10: Replace loading message with final response ──────────────
       const finalMsg: ChatMessage = {

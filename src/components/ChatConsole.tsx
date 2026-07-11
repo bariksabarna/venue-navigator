@@ -44,6 +44,16 @@ export function ChatConsole({
     }
   }, [messages, isLoading]);
 
+  // Handle map node selection interactions
+  useEffect(() => {
+    const handleSetInput = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      setInput(customEvent.detail);
+    };
+    window.addEventListener('set-chat-input', handleSetInput);
+    return () => window.removeEventListener('set-chat-input', handleSetInput);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;

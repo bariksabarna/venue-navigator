@@ -1,20 +1,12 @@
-
 /**
- * AccessibilityPanel Component
+ * @fileoverview AccessibilityPanel Component.
  *
  * Modal panel for setting the fan's accessibility profile and UI preferences.
  * Changes are persisted to localStorage via the useAccessibilityProfile hook.
  * The panel traps focus when open (keyboard accessibility, SRS §9).
  * Profile selection changes both route constraints and UI appearance.
  *
- * @component
- * @param {boolean}  props.isOpen   - Whether the panel is visible.
- * @param {Function} props.onClose  - Called when the panel should close.
- * @param {object}   props.prefs    - Current accessibility preferences.
- * @param {Function} props.setProfile       - Sets the accessibility profile.
- * @param {Function} props.toggleHighContrast - Toggles high-contrast theme.
- * @param {Function} props.toggleLargeText    - Toggles large text mode.
- * @param {Function} props.toggleVoiceOutput  - Toggles TTS voice output.
+ * @module AccessibilityPanel
  */
 
 import { useEffect, useRef } from 'react';
@@ -41,34 +33,82 @@ const PROFILES: { id: AccessibilityProfile; icon: string; label: string; descrip
 
 /**
  * AccessibilityPanel renders a modal for choosing accessibility profile and UI options.
+ *
+ * Includes keyboard accessibility: focus-trap, close on Escape, autofocus on open.
  */
 export function AccessibilityPanel({
   isOpen, onClose, prefs, setProfile, toggleHighContrast, toggleLargeText, toggleVoiceOutput,
 }: AccessibilityPanelProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Focus the close button when panel opens
   useEffect(() => {
-    if (isOpen) closeRef.current?.focus();
+    if (isOpen) {
+      closeRef.current?.focus();
+    }
   }, [isOpen]);
 
   // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
 
+  // Focus Trap
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      const focusableElements = panel.querySelectorAll<HTMLElement>(
+        'button:not([tabindex="-1"]), [href]:not([tabindex="-1"]), input:not([tabindex="-1"]), select:not([tabindex="-1"]), textarea:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => document.removeEventListener('keydown', handleTabKey);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="a11y-panel" role="dialog" aria-modal="true" aria-labelledby="a11y-panel-title">
+    <div
+      ref={panelRef}
+      className="a11y-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="a11y-panel-title"
+    >
       {/* Backdrop: a real <button> so keyboard/pointer closing is accessible */}
       <button
         type="button"
         className="a11y-backdrop"
-        aria-label="Close accessibility settings"
+        aria-label="Dismiss accessibility settings"
         onClick={onClose}
         tabIndex={-1}
       />
@@ -88,12 +128,12 @@ export function AccessibilityPanel({
           </button>
         </div>
 
-        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
+        <p className="a11y-panel-desc">
           Your profile is saved automatically and affects routes, UI, and language style.
         </p>
 
-        <fieldset style={{ border: 'none' }}>
-          <legend style={{ fontWeight: 600, marginBottom: '0.75rem', fontSize: '0.9rem' }}>
+        <fieldset className="a11y-fieldset">
+          <legend className="a11y-legend">
             Accessibility Profile
           </legend>
           <div className="profile-grid">
@@ -107,7 +147,7 @@ export function AccessibilityPanel({
               >
                 <span className="profile-icon" aria-hidden="true">{p.icon}</span>
                 <strong>{p.label}</strong>
-                <span style={{ color: 'var(--color-text-muted)' }}>{p.description}</span>
+                <span className="profile-desc">{p.description}</span>
               </button>
             ))}
           </div>

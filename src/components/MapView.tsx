@@ -1,5 +1,5 @@
 /**
- * MapView Component
+ * @fileoverview MapView Component.
  *
  * Renders an SVG-based venue map with all nodes as labelled, interactive points.
  * When a route is computed by the pathfinder, the route path is highlighted
@@ -8,11 +8,9 @@
  *
  * This component never computes routes — it only renders what the pathfinder provides.
  * All navigation is keyboard-accessible: nodes are focusable and have aria-labels.
+ * Clicking or pressing Enter/Space on a node pre-fills the chat input.
  *
- * @component
- * @param {PathResult | null} props.route       - The computed route to highlight, or null.
- * @param {string[]}          props.routeLabels - Human-readable node labels for the route.
- * @param {LiveEvent[]}       props.liveEvents  - Active events (used for zone highlighting).
+ * @module MapView
  */
 
 import type { PathResult, LiveEvent } from '../types';
@@ -42,7 +40,11 @@ interface MapViewProps {
  */
 export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
   const routeSet = new Set(route?.path ?? []);
-  const congestionZones = new Set(liveEvents.filter((e) => e.type === 'congestion' && e.severity === 'high').map((e) => e.zone));
+  const congestionZones = new Set(
+    liveEvents
+      .filter((e) => e.type === 'congestion' && e.severity === 'high')
+      .map((e) => e.zone)
+  );
 
   // Build edge segments to render
   const edges = graph.edges.map((edge, i) => {
@@ -50,13 +52,18 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
     const to   = graph.nodes.find((n) => n.id === edge.to);
     if (!from || !to) return null;
 
-    const isRouteEdge = route?.path.includes(edge.from) && route?.path.includes(edge.to) &&
+    const isRouteEdge =
+      route?.path.includes(edge.from) &&
+      route?.path.includes(edge.to) &&
       Math.abs(route.path.indexOf(edge.from) - route.path.indexOf(edge.to)) === 1;
 
     return (
       <line
         key={`edge-${i}`}
-        x1={from.x} y1={from.y} x2={to.x} y2={to.y}
+        x1={from.x}
+        y1={from.y}
+        x2={to.x}
+        y2={to.y}
         stroke={isRouteEdge ? '#ffd700' : 'rgba(74,158,255,0.15)'}
         strokeWidth={isRouteEdge ? 3 : 1.5}
         className={isRouteEdge ? 'map-route-path' : ''}
@@ -64,14 +71,22 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
     );
   });
 
+  const handleNodeClick = (nodeLabel: string) => {
+    const event = new CustomEvent('set-chat-input', { detail: `Tell me about ${nodeLabel}` });
+    window.dispatchEvent(event);
+  };
+
   return (
-    <div className="map-container" role="img" aria-label="Stadium venue map. Route is highlighted in gold when navigation is active.">
+    <div
+      className="map-container"
+      role="img"
+      aria-label="Stadium venue map. Route is highlighted in gold when navigation is active."
+    >
       <svg
         className="map-svg"
         viewBox="0 0 700 600"
         aria-hidden="false"
         focusable="false"
-        style={{ background: 'radial-gradient(ellipse at center, #0f2040 0%, #0a1628 100%)' }}
       >
         {/* Decorative stadium outline */}
         <ellipse cx="300" cy="300" rx="260" ry="240" fill="none" stroke="rgba(74,158,255,0.08)" strokeWidth="40" />
@@ -96,6 +111,13 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
               tabIndex={0}
               role="button"
               aria-label={`${node.label}${node.stepFree ? ' (step-free)' : ''}${isCongested ? ' — high congestion' : ''}${isStart ? ' — start of route' : ''}${isEnd ? ' — destination' : ''}`}
+              onClick={() => handleNodeClick(node.label)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleNodeClick(node.label);
+                }
+              }}
             >
               {/* Outer glow for route nodes */}
               {isOnRoute && (
@@ -106,7 +128,9 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
                 <circle cx={node.x} cy={node.y} r={r + 4} fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 3" opacity="0.6" />
               )}
               <circle
-                cx={node.x} cy={node.y} r={r}
+                cx={node.x}
+                cy={node.y}
+                r={r}
                 fill={isEnd ? '#ffd700' : isStart ? '#22c55e' : color}
                 stroke={isOnRoute ? '#fff' : 'rgba(255,255,255,0.2)'}
                 strokeWidth={isOnRoute ? 2 : 1}
@@ -124,7 +148,6 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
                 fill={isOnRoute ? '#fff' : 'rgba(232,237,245,0.6)'}
                 fontSize={isOnRoute ? '9' : '8'}
                 fontWeight={isOnRoute ? '600' : '400'}
-                style={{ pointerEvents: 'none', fontFamily: 'Inter, sans-serif' }}
               >
                 {node.label.length > 18 ? node.label.slice(0, 16) + '…' : node.label}
               </text>
@@ -149,23 +172,23 @@ export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
       {/* Map legend */}
       <div className="map-legend" aria-label="Map legend">
         <div className="map-legend-item">
-          <span className="map-legend-dot" style={{ background: '#4a9eff' }} aria-hidden="true" />
+          <span className="map-legend-dot gate" aria-hidden="true" />
           Gates
         </div>
         <div className="map-legend-item">
-          <span className="map-legend-dot" style={{ background: '#22c55e' }} aria-hidden="true" />
+          <span className="map-legend-dot start" aria-hidden="true" />
           Sections / Start
         </div>
         <div className="map-legend-item">
-          <span className="map-legend-dot" style={{ background: '#f59e0b' }} aria-hidden="true" />
+          <span className="map-legend-dot amenity" aria-hidden="true" />
           Amenities
         </div>
         <div className="map-legend-item">
-          <span className="map-legend-dot" style={{ background: '#ffd700' }} aria-hidden="true" />
+          <span className="map-legend-dot destination" aria-hidden="true" />
           Destination
         </div>
         <div className="map-legend-item">
-          <span className="map-legend-dot" style={{ background: '#a78bfa' }} aria-hidden="true" />
+          <span className="map-legend-dot elevator" aria-hidden="true" />
           Elevators
         </div>
       </div>
