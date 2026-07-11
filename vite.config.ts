@@ -50,7 +50,9 @@ export default defineConfig({
         'eslint.config.js',
         'vite.config.ts',
         '**/*.d.ts',
-        'src/vite-env.d.ts'
+        'src/vite-env.d.ts',
+        '**/*.test.ts',
+        '**/*.test.tsx'
       ]
     }
   }

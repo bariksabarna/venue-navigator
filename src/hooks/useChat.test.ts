@@ -52,8 +52,7 @@ describe('useChat hook', () => {
         vi.spyOn(window.speechSynthesis, 'speak').mockImplementation(() => {});
       }
       if (!window.SpeechSynthesisUtterance) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).SpeechSynthesisUtterance = function (text: string) {
+        (window as unknown as Record<string, unknown>).SpeechSynthesisUtterance = function (text: string) {
           return { text, lang: '' };
         };
       }

@@ -1,7 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+/**
+ * @fileoverview Tests for ChatConsole component.
+ *
+ * Covers: message rendering, form submission, keyboard interactions,
+ * offline state, voice transcript integration, and scrollIntoView behavior.
+ */
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ChatConsole } from './ChatConsole';
 import type { ChatMessage } from '../types';
+
+// Extend Window with optional speech API for test controls
+interface SpeechWindow extends Window {
+  SpeechRecognition?: unknown;
+  webkitSpeechRecognition?: unknown;
+}
+
+const testWindow = window as unknown as SpeechWindow;
 
 const mockMessages: ChatMessage[] = [
   { id: 'm1', role: 'user', content: 'hello', timestamp: new Date().toISOString() },
@@ -21,11 +35,14 @@ const mockMessagesWithRoute: ChatMessage[] = [
 
 describe('ChatConsole Component', () => {
   beforeEach(() => {
-    // Ensure SpeechRecognition is undefined so VoiceInputButton returns null (simpler DOM)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).webkitSpeechRecognition = undefined;
+    // Disable SpeechRecognition so VoiceInputButton returns null (simpler DOM)
+    testWindow.SpeechRecognition = undefined;
+    testWindow.webkitSpeechRecognition = undefined;
+  });
+
+  afterEach(() => {
+    testWindow.SpeechRecognition = undefined;
+    testWindow.webkitSpeechRecognition = undefined;
   });
 
   it('renders chat history and welcomes user if empty', () => {
@@ -272,7 +289,6 @@ describe('ChatConsole Component', () => {
 
   it('calls scrollIntoView when messages are added', async () => {
     const scrollIntoViewMock = vi.fn();
-    // Assign mock before render so the ref picks it up
     window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
     const { rerender } = render(
@@ -303,22 +319,19 @@ describe('ChatConsole Component', () => {
   });
 
   it('sets input from voice transcript via VoiceInputButton onTranscript callback', async () => {
-    // Enable SpeechRecognition so VoiceInputButton renders its button
+    // Mock SpeechRecognition instance for this test
     const mockRecognition = {
       start: vi.fn(),
       stop: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      abort: vi.fn(),
       continuous: false,
       interimResults: false,
       lang: '',
-      onresult: null,
-      onerror: null,
-      onend: null,
+      onresult: null as ((e: unknown) => void) | null,
+      onerror: null as (() => void) | null,
+      onend: null as (() => void) | null,
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = vi.fn(() => mockRecognition);
+
+    testWindow.SpeechRecognition = vi.fn(() => mockRecognition);
 
     render(
       <ChatConsole
@@ -331,34 +344,23 @@ describe('ChatConsole Component', () => {
       />
     );
 
-    // Simulate a voice result by calling the onresult handler directly
     const voiceBtn = screen.getByRole('button', { name: /start voice input/i });
     fireEvent.click(voiceBtn);
 
-    // Simulate speech recognition result with isFinal: true
     await act(async () => {
       if (mockRecognition.onresult) {
         const mockEvent = {
           resultIndex: 0,
           results: {
             length: 1,
-            0: {
-              isFinal: true,
-              0: { transcript: 'where is the exit' },
-            },
+            0: { isFinal: true, 0: { transcript: 'where is the exit' } },
           },
         };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (mockRecognition.onresult as any)(mockEvent);
+        mockRecognition.onresult(mockEvent);
       }
     });
 
     const input = screen.getByRole('textbox') as HTMLTextAreaElement;
     expect(input.value).toBe('where is the exit');
-
-    // cleanup
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = undefined;
   });
 });
-
