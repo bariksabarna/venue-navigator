@@ -40,7 +40,7 @@ interface MapViewProps {
 /**
  * MapView renders the SVG stadium map and highlights any active route.
  */
-export function MapView({ route, liveEvents }: MapViewProps) {
+export function MapView({ route, routeLabels, liveEvents }: MapViewProps) {
   const routeSet = new Set(route?.path ?? []);
   const congestionZones = new Set(liveEvents.filter((e) => e.type === 'congestion' && e.severity === 'high').map((e) => e.zone));
 
@@ -135,9 +135,12 @@ export function MapView({ route, liveEvents }: MapViewProps) {
         {/* Route distance label */}
         {route && (
           <g>
-            <rect x="10" y="10" width="200" height="32" rx="6" fill="rgba(15,32,64,0.9)" stroke="rgba(255,215,0,0.4)" strokeWidth="1" />
-            <text x="20" y="30" fill="#ffd700" fontSize="11" fontWeight="600" fontFamily="Inter, sans-serif">
+            <rect x="10" y="10" width="220" height="46" rx="6" fill="rgba(15,32,64,0.9)" stroke="rgba(255,215,0,0.4)" strokeWidth="1" />
+            <text x="20" y="28" fill="#ffd700" fontSize="11" fontWeight="600" fontFamily="Inter, sans-serif">
               🗺 Route: ~{Math.round(route.totalDistance)}m walk
+            </text>
+            <text x="20" y="46" fill="rgba(232,237,245,0.7)" fontSize="10" fontFamily="Inter, sans-serif">
+              {routeLabels.length} stops: {routeLabels.join(' → ')}
             </text>
           </g>
         )}

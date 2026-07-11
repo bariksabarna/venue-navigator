@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
+
 /**
  * AccessibilityPanel Component
  *
@@ -63,13 +63,15 @@ export function AccessibilityPanel({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="a11y-panel"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="a11y-panel-title"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
+    <div className="a11y-panel" role="dialog" aria-modal="true" aria-labelledby="a11y-panel-title">
+      {/* Backdrop: a real <button> so keyboard/pointer closing is accessible */}
+      <button
+        type="button"
+        className="a11y-backdrop"
+        aria-label="Close accessibility settings"
+        onClick={onClose}
+        tabIndex={-1}
+      />
       <div className="a11y-panel-inner">
         <div className="a11y-panel-header">
           <h2 id="a11y-panel-title" className="a11y-panel-title">

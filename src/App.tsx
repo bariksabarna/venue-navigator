@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Root application component for Setu — FIFA World Cup 2026 AI Stadium Concierge.
+ *
+ * Composes all primary UI sections (map panel, chat console, modals) and wires
+ * together the three core hooks: useAccessibilityProfile, useLanguage, and useChat.
+ * State is lifted here so MapView and ChatConsole share a single source of truth
+ * for the computed route and live events.
+ *
+ * @module App
+ */
+
 import { useState } from 'react';
 import { useAccessibilityProfile } from './hooks/useAccessibilityProfile';
 import { useLanguage } from './hooks/useLanguage';

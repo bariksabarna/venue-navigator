@@ -1,5 +1,20 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
-import { useEffect, useState } from 'react';
+/**
+ * OpsLiteDashboard Component
+ *
+ * A read-only modal dashboard for stadium operations staff showing anonymized,
+ * aggregated query-topic counts by zone. No raw query text or user identifiers
+ * are stored or displayed — increment-only counters only (SRS §8 item 5).
+ *
+ * The backdrop is rendered as a proper <button> for keyboard-accessible close
+ * behaviour (no jsx-a11y violations).
+ *
+ * @component
+ * @param {boolean}  props.isOpen    - Whether the panel is visible.
+ * @param {Function} props.onClose   - Callback to close the panel.
+ * @param {object[]} props.messages  - Current session messages (used for live topic tallying).
+ */
+
+import { useEffect, useRef, useState } from 'react';
 import type { AggregatedCount } from '../types';
 
 interface OpsLiteDashboardProps {
@@ -8,19 +23,38 @@ interface OpsLiteDashboardProps {
   messages: { content: string; timestamp: string }[];
 }
 
+/**
+ * OpsLiteDashboard renders an aggregate operations view for stadium staff.
+ * It counts topic frequencies from the current session's messages and blends
+ * them with representative baseline values to give a realistic demo picture.
+ */
 export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboardProps) {
   const [stats, setStats] = useState<AggregatedCount[]>([]);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Focus the close button when panel opens
+  useEffect(() => {
+    if (isOpen) closeRef.current?.focus();
+  }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
-    // Generate simulated/aggregated query stats from current messages plus baseline data
+    // Representative baseline data — demo values for a typical match day
     const baselineStats: AggregatedCount[] = [
-      { zone: 'gate-3', topic: 'congestion', count: 18, windowStart: new Date().toISOString() },
-      { zone: 'gate-1', topic: 'tickets', count: 24, windowStart: new Date().toISOString() },
-      { zone: 'center-hub', topic: 'amenities', count: 32, windowStart: new Date().toISOString() },
-      { zone: 'gate-5', topic: 'accessibility', count: 12, windowStart: new Date().toISOString() },
+      { zone: 'gate-3',     topic: 'congestion',   count: 18, windowStart: new Date().toISOString() },
+      { zone: 'gate-1',     topic: 'tickets',       count: 24, windowStart: new Date().toISOString() },
+      { zone: 'center-hub', topic: 'amenities',     count: 32, windowStart: new Date().toISOString() },
+      { zone: 'gate-5',     topic: 'accessibility', count: 12, windowStart: new Date().toISOString() },
     ];
 
-    // Count user messages to increment stats dynamically (for demo purposes)
+    // Tally current session messages into topic buckets (anonymized — content only, never stored)
     const topicCounts: Record<string, number> = { congestion: 0, tickets: 0, amenities: 0, accessibility: 0 };
     messages.forEach((msg) => {
       const txt = msg.content.toLowerCase();
@@ -35,35 +69,34 @@ export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboard
       }
     });
 
-    const updatedStats = baselineStats.map((stat) => {
-      const increment = topicCounts[stat.topic as keyof typeof topicCounts] || 0;
-      return {
+    setStats(
+      baselineStats.map((stat) => ({
         ...stat,
-        count: stat.count + increment,
-      };
-    });
-
-    setStats(updatedStats);
+        count: stat.count + (topicCounts[stat.topic as keyof typeof topicCounts] ?? 0),
+      }))
+    );
   }, [messages, isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div
-      className="ops-panel"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ops-title"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
+    <div className="ops-panel" role="dialog" aria-modal="true" aria-labelledby="ops-title">
+      {/* Backdrop: keyboard-accessible button so close is operable without mouse */}
+      <button
+        type="button"
+        className="ops-backdrop"
+        aria-label="Close Operations Dashboard"
+        onClick={onClose}
+        tabIndex={-1}
+      />
+
       <div className="ops-panel-inner">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-          <h2 id="ops-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 600 }}>
+        <div className="ops-panel-header">
+          <h2 id="ops-title" className="ops-panel-title">
             📊 Ops Lite — Real-time Operational Dashboard
           </h2>
           <button
+            ref={closeRef}
             type="button"
             className="btn btn-ghost btn-icon"
             onClick={onClose}
@@ -73,8 +106,9 @@ export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboard
           </button>
         </div>
 
-        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-          Anonymized query topic counts by stadium zone. No raw chat contents or user identity information are saved or displayed here.
+        <p className="ops-description">
+          Anonymized query topic counts by stadium zone. No raw chat contents or user
+          identity information are saved or displayed here.
         </p>
 
         <div className="ops-grid">
@@ -93,9 +127,10 @@ export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboard
           ))}
         </div>
 
-        <div className="ops-disclaimer">
-          This read-only dashboard provides tournament operators and stewards with immediate aggregate insight into areas of passenger/fan friction.
-        </div>
+        <p className="ops-disclaimer">
+          This read-only dashboard provides tournament operators and stewards with immediate
+          aggregate insight into areas of passenger/fan friction.
+        </p>
       </div>
     </div>
   );
