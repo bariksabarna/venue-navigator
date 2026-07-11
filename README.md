@@ -2,7 +2,7 @@
 
 **Setu** is an intelligent indoor navigation and informational concierge for the FIFA World Cup 2026, built for international fans and accessibility-priority attendees. It combines deterministic graph-based pathfinding with Gemini's natural-language generation to deliver safe, fast, multilingual stadium guidance.
 
-🔗 **Live Demo**: [https://setu-concierge-1059171200393.us-central1.run.app](https://setu-concierge-1059171200393.us-central1.run.app)  
+🔗 **Live Demo**: [https://prompt-wars-493211.web.app](https://prompt-wars-493211.web.app)  
 🐙 **GitHub**: [https://github.com/bariksabarna/venue-navigator](https://github.com/bariksabarna/venue-navigator)
 
 ---
@@ -75,7 +75,7 @@
 | Offline | `vite-plugin-pwa` Service Worker | Caches shell + static data for stadium Wi-Fi gaps |
 | Navigation | Dijkstra over `venueGraph.json` | Deterministic, zero LLM dependency |
 | FAQ Retrieval | Tag-overlap scoring over `faq.json` | No embedding service needed; fast and free |
-| Deployment | Google Cloud Run (Nginx + Alpine) | Containerized SPA; scales to zero cost |
+| Deployment | Firebase Hosting | Fully static CDN deployment; zero cost, fast load times |
 | CI | GitHub Actions | Lint + typecheck + test coverage on every push |
 
 ---
@@ -158,17 +158,48 @@ setu/
 └── firestore.rules              ← Anonymized-analytics-only security rules
 ```
 
----
-
 ## 🧪 Test Coverage
 
-| Module | Statements | Branches |
-| :--- | :--- | :--- |
-| `lib/pathfinding` | 100% | 100% |
-| `lib/knowledgeBase` | 100% | 100% |
-| `lib/sanitize` | 100% | 100% |
-| `lib/cache` | 100% | 100% |
-| `lib/uuid` | 100% | 100% |
-| **Overall project** | **92.73%** | **88.01%** |
+| Module / Component | Statement Coverage | Branch Coverage | Function Coverage |
+| :--- | :--- | :--- | :--- |
+| `lib/pathfinding` | 100% | 89.36% | 100% |
+| `lib/knowledgeBase` | 100% | 100% | 100% |
+| `lib/sanitize` | 100% | 100% | 100% |
+| `lib/cache` | 100% | 100% | 100% |
+| `lib/uuid` | 100% | 100% | 100% |
+| `hooks/useChat` | 100% | 97.36% | 100% |
+| `components/MapView` | 100% | 96.82% | 100% |
+| `components/OpsLiteDashboard` | 100% | 87.17% | 100% |
+| `components/VoiceInputButton` | 100% | 96.55% | 100% |
+| **Overall Project Total** | **99.13%** | **94.86%** | **98.18%** |
 
-**99 tests across 15 test files — all passing.**
+**153 unit and integration tests across 16 test files — 100% passing.**
+
+---
+
+## 🎯 Problem Statement Alignment
+
+Setu directly solves **Challenge 4: Smart Stadiums & Tournament Operations** by addressing key operational friction points for the FIFA World Cup 2026:
+
+1. **Multilingual Inclusivity & Translation**:
+   - International fans can query in their native language (e.g. Hindi, Spanish).
+   - The dual-call AI pipeline detects query language instantly (`onLanguageDetected`) and generates Gemini-composed translated text response back.
+
+2. **Smart, Step-Free Accessibility Routing**:
+   - The Dijkstra pathfinder supports routing constraints. Wheelchair and priority profiles compute step-free pathways (avoiding stairs, utilizing elevators/ramps).
+   - High-contrast, large text, and text-to-speech toggles accommodate visual/hearing-impaired fans dynamically.
+
+3. **Real-time Crowds & Delays Mitigation**:
+   - Live events (congestion, weather alerts, gate delays) are injected into the navigation context.
+   - Pathfinder automatically routes around high-congestion zones in real-time, preventing bottleneck formations.
+
+4. **Robust Operational Steward Controls**:
+   - Includes a read-only Ops Lite Dashboard for stewards, consolidating live crowd severity levels, queue wait times, active emergency alerts, and transit details.
+
+5. **Hallucination-Free AI Integration**:
+   - Deterministic operations (Dijkstra navigation and local database matching) are handled in local TypeScript code.
+   - Natural language generation (Gemini) is strictly limited to explaining computed results, ensuring safety.
+
+6. **Free-Tier/No-Billing Design**:
+   - Avoids expensive cloud compute resources. Operates fully client-side and deployed on Firebase Hosting's permanently free tier.
+

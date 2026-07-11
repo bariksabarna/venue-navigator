@@ -71,14 +71,34 @@ describe('OpsLiteDashboard Component', () => {
     const closeBtn = screen.getByRole('button', { name: /Close Operations Dashboard/i });
     expect(document.activeElement).toBe(closeBtn);
 
-    // Simulate Tab key focus trapping
+    // Simulate Tab key focus trapping (forward)
     const focusable = screen.getAllByRole('button');
-    const last = focusable[focusable.length - 1]; // last button is last card or close button
+    const last = focusable[focusable.length - 1]; // last button inside the modal
 
     // Tab on last element should cycle back to first focusable element
     last.focus();
     fireEvent.keyDown(last, { key: 'Tab', shiftKey: false });
-    // First focusable element inside the modal should have focus (which is the close button, since backdrop has tabIndex={-1})
+    // First focusable element inside the modal should have focus
     expect(document.activeElement).toBe(closeBtn);
   });
+
+  it('traps Shift+Tab focus back to last element from first', () => {
+    render(
+      <OpsLiteDashboard isOpen={true} onClose={vi.fn()} messages={[]} />
+    );
+
+    const closeBtn = screen.getByRole('button', { name: /Close Operations Dashboard/i });
+
+    // Focus the first tabbable element (closeBtn) then Shift+Tab → should wrap to last
+    closeBtn.focus();
+    expect(document.activeElement).toBe(closeBtn);
+
+    const allButtons = screen.getAllByRole('button');
+    const last = allButtons[allButtons.length - 1];
+
+    // Simulate Shift+Tab on first element — should wrap to last
+    fireEvent.keyDown(closeBtn, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(last);
+  });
 });
+

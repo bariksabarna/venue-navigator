@@ -36,3 +36,8 @@ npm-debug.log*
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Credentials and Keys
+sa-key.json
+adc-local.json
+

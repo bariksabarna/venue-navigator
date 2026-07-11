@@ -127,4 +127,32 @@ describe('VoiceInputButton Component', () => {
     });
     expect(button).not.toHaveClass('listening');
   });
+
+  it('falls back to webkitSpeechRecognition when SpeechRecognition is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).SpeechRecognition = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).webkitSpeechRecognition = MockSpeechRecognition;
+
+    const handleTranscript = vi.fn();
+    render(<VoiceInputButton onTranscript={handleTranscript} />);
+
+    // Should still render with webkit fallback
+    expect(screen.getByRole('button', { name: /start voice input/i })).toBeInTheDocument();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).webkitSpeechRecognition = undefined;
+  });
+
+  it('returns null when no SpeechRecognition API is available', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).SpeechRecognition = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).webkitSpeechRecognition = undefined;
+
+    const handleTranscript = vi.fn();
+    const { container } = render(<VoiceInputButton onTranscript={handleTranscript} />);
+    expect(container.firstChild).toBeNull();
+  });
 });
+

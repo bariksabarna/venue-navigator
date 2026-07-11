@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useChat } from './useChat';
 import { parseIntent, generateResponse } from '../lib/gemini';
 import { findShortestPath } from '../lib/pathfinding';
-import { clearCache } from '../lib/cache';
+import { clearCache, setCacheEntry, makeCacheKey } from '../lib/cache';
 import type { AccessibilityPrefs, LiveEvent } from '../types';
 
 // Mock gemini module
@@ -351,4 +351,82 @@ describe('useChat hook', () => {
 
     expect(result.current.messages[1].content).toBe('Here is FAQ info.');
   });
+
+  it('builds live events context string when events are present', async () => {
+    const onLanguageDetected = vi.fn();
+    const onRouteComputed = vi.fn();
+
+    const liveEventsWithData: LiveEvent[] = [
+      {
+        id: 'evt-1',
+        type: 'congestion',
+        zone: 'sec-101',
+        severity: 'high',
+        message: 'Heavy congestion near Gate 4',
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+
+    vi.mocked(parseIntent).mockResolvedValue({
+      language: 'en',
+      intent: 'smalltalk',
+      destination_node_id: null,
+      current_node_id: null,
+      faq_topic: null,
+      reading_level: 'standard',
+    });
+
+    vi.mocked(generateResponse).mockResolvedValue('Live events response.');
+
+    const { result } = renderHook(() =>
+      useChat(mockPrefs, liveEventsWithData, onLanguageDetected, onRouteComputed)
+    );
+
+    await act(async () => {
+      await result.current.sendMessage('what is happening near gate 4?');
+    });
+
+    // parseIntent should be called with the live context string included
+    expect(parseIntent).toHaveBeenCalledWith(
+      'what is happening near gate 4?',
+      expect.stringContaining('[sec-101] Heavy congestion near Gate 4')
+    );
+    expect(result.current.messages[1].content).toBe('Live events response.');
+  });
+
+  it('hits language-specific cache (post-parseIntent) when pre-parse unknown key misses', async () => {
+    const onLanguageDetected = vi.fn();
+    const onRouteComputed = vi.fn();
+
+    // Seed the language-specific cache key ONLY (not the unknown:: pre-parse key)
+    // so the pre-parse check misses, parseIntent runs, then the post-parseIntent
+    // language cache check (lines 172-179) hits and returns early.
+    const query = 'unique lang cache query xyz';
+    setCacheEntry(makeCacheKey(query, 'hi'), 'हिंदी कैश रिस्पांस');
+
+    vi.mocked(parseIntent).mockResolvedValue({
+      language: 'hi',
+      intent: 'smalltalk',
+      destination_node_id: null,
+      current_node_id: null,
+      faq_topic: null,
+      reading_level: 'standard',
+    });
+
+    const { result } = renderHook(() =>
+      useChat(mockPrefs, mockEvents, onLanguageDetected, onRouteComputed)
+    );
+
+    await act(async () => {
+      await result.current.sendMessage(query);
+    });
+
+    // parseIntent WAS called (pre-parse unknown:: key missed)
+    expect(parseIntent).toHaveBeenCalledTimes(1);
+    // generateResponse was NOT called — language cache hit at lines 172-179
+    expect(generateResponse).not.toHaveBeenCalled();
+    // The cached response should appear in the message
+    expect(result.current.messages[1].content).toBe('हिंदी कैश रिस्पांस');
+  });
 });
+
