@@ -1,3 +1,13 @@
+/**
+ * @fileoverview ChatConsole — the primary fan-facing AI chat interface.
+ *
+ * Renders the message list (with aria-live announcements), the text/voice input
+ * form, and a typing indicator while the AI pipeline is running.
+ * All styling uses CSS class names defined in index.css — no inline styles.
+ *
+ * @component
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChatMessage } from '../types';
 import { VoiceInputButton } from './VoiceInputButton';
@@ -12,6 +22,10 @@ interface ChatConsoleProps {
   isDeafProfile: boolean;
 }
 
+/**
+ * ChatConsole renders the full chat UI: message history, loading indicator,
+ * offline notice, and the text/voice input form.
+ */
 export function ChatConsole({
   messages,
   isLoading,
@@ -45,14 +59,12 @@ export function ChatConsole({
   return (
     <div className="chat-panel" role="region" aria-label="Stadium concierge assistant chat console">
       <div className="chat-header">
-        <span aria-hidden="true" style={{ fontSize: '1.25rem' }}>💬</span>
-        <h2 style={{ fontSize: '1rem', fontWeight: 600, fontFamily: 'var(--font-heading)' }}>
-          Concierge Chat
-        </h2>
+        <span aria-hidden="true" className="chat-header-icon">💬</span>
+        <h2 className="chat-header-title">Concierge Chat</h2>
         <button
+          type="button"
           onClick={clearMessages}
-          className="btn btn-ghost"
-          style={{ marginLeft: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}
+          className="btn btn-ghost chat-reset-btn"
           aria-label="Clear chat messages"
           disabled={messages.length === 0}
         >
@@ -60,14 +72,14 @@ export function ChatConsole({
         </button>
       </div>
 
-      <div 
+      <div
         className="chat-messages"
         aria-live="polite"
         aria-atomic="false"
       >
         {messages.length === 0 && (
-          <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            <span aria-hidden="true" style={{ display: 'block', fontSize: '2rem', marginBottom: '0.5rem' }}>👋</span>
+          <div className="chat-empty-state">
+            <span aria-hidden="true" className="chat-empty-icon">👋</span>
             <p>Welcome! Ask me anything about the venue, events, tickets, or where to find restrooms, food, and gates.</p>
           </div>
         )}
@@ -77,14 +89,14 @@ export function ChatConsole({
             <span className="visually-hidden">
               {msg.role === 'user' ? 'You said:' : 'Assistant says:'}
             </span>
-            <div 
+            <div
               className="message-bubble"
               dangerouslySetInnerHTML={{ __html: textToSafeHtml(msg.content) }}
             />
             {msg.route && (
-              <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: 'var(--color-surface-2)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.8rem' }}>
+              <div className="message-route-summary">
                 <strong>📌 Calculated Route:</strong>
-                <p style={{ marginTop: '0.25rem', color: 'var(--color-gold)' }}>
+                <p className="message-route-distance">
                   Total distance: {Math.round(msg.route.totalDistance)} meters
                 </p>
               </div>
@@ -134,7 +146,7 @@ export function ChatConsole({
             disabled={isLoading}
             aria-label="Send a message to the concierge assistant"
           />
-          
+
           <VoiceInputButton
             onTranscript={handleVoiceTranscript}
             disabled={isLoading || isOffline}

@@ -112,8 +112,8 @@ export function OpsLiteDashboard({ isOpen, onClose, messages }: OpsLiteDashboard
         </p>
 
         <div className="ops-grid">
-          {stats.map((stat, index) => (
-            <div key={index} className="ops-card">
+          {stats.map((stat) => (
+            <div key={`${stat.zone}-${stat.topic}`} className="ops-card">
               <div className="ops-count" aria-live="polite">
                 {stat.count}
               </div>
