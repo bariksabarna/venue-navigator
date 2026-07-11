@@ -1,43 +1,65 @@
+/**
+ * @fileoverview Tests for VoiceInputButton component.
+ *
+ * Covers: speech recognition button rendering, deaf profile hiding,
+ * start/stop toggle, interim results, error/end handlers, and fallback APIs.
+ */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { VoiceInputButton } from './VoiceInputButton';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let mockInstance: any = null;
+interface SpeechWindow extends Window {
+  SpeechRecognition?: unknown;
+  webkitSpeechRecognition?: unknown;
+}
+
+interface MockSpeechRecognitionEvent {
+  resultIndex: number;
+  results: {
+    length: number;
+    [index: number]: {
+      isFinal: boolean;
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+}
+
+let mockInstance: MockSpeechRecognition | null = null;
+
+function setMockInstance(instance: MockSpeechRecognition | null) {
+  mockInstance = instance;
+}
 
 class MockSpeechRecognition {
   continuous = false;
   interimResults = false;
   lang = '';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onresult: any = null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onerror: any = null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onend: any = null;
-  start() {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    mockInstance = this;
+  onresult: ((event: MockSpeechRecognitionEvent) => void) | null = null;
+  onerror: (() => void) | null = null;
+  onend: (() => void) | null = null;
+  constructor() {
+    setMockInstance(this);
   }
+  start() {}
   stop() {
-    mockInstance = null;
+    setMockInstance(null);
   }
 }
+const testWindow = window as unknown as SpeechWindow;
 
 describe('VoiceInputButton Component', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const originalSpeech = (window as any).SpeechRecognition;
+  const originalSpeech = testWindow.SpeechRecognition;
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockInstance = null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = MockSpeechRecognition;
+    testWindow.SpeechRecognition = MockSpeechRecognition;
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = originalSpeech;
+    testWindow.SpeechRecognition = originalSpeech;
   });
 
   it('renders speech recognition button', () => {
@@ -68,15 +90,18 @@ describe('VoiceInputButton Component', () => {
 
     // Simulate final result
     act(() => {
-      mockInstance.onresult({
-        resultIndex: 0,
-        results: [
-          {
-            isFinal: true,
-            0: { transcript: 'Where is Gate 4?' },
+      if (mockInstance?.onresult) {
+        mockInstance.onresult({
+          resultIndex: 0,
+          results: {
+            length: 1,
+            0: {
+              isFinal: true,
+              0: { transcript: 'Where is Gate 4?' },
+            },
           },
-        ],
-      });
+        });
+      }
     });
 
     expect(handleTranscript).toHaveBeenCalledWith('Where is Gate 4?');
@@ -97,15 +122,18 @@ describe('VoiceInputButton Component', () => {
 
     // Simulate interim result
     act(() => {
-      mockInstance.onresult({
-        resultIndex: 0,
-        results: [
-          {
-            isFinal: false,
-            0: { transcript: 'Where is' },
+      if (mockInstance?.onresult) {
+        mockInstance.onresult({
+          resultIndex: 0,
+          results: {
+            length: 1,
+            0: {
+              isFinal: false,
+              0: { transcript: 'Where is' },
+            },
           },
-        ],
-      });
+        });
+      }
     });
 
     // Expect the interim container to render visually-hidden transcript text
@@ -113,7 +141,9 @@ describe('VoiceInputButton Component', () => {
 
     // Simulate error event
     act(() => {
-      mockInstance.onerror();
+      if (mockInstance?.onerror) {
+        mockInstance.onerror();
+      }
     });
     expect(button).not.toHaveClass('listening');
 
@@ -123,16 +153,16 @@ describe('VoiceInputButton Component', () => {
 
     // Simulate end event
     act(() => {
-      mockInstance.onend();
+      if (mockInstance?.onend) {
+        mockInstance.onend();
+      }
     });
     expect(button).not.toHaveClass('listening');
   });
 
   it('falls back to webkitSpeechRecognition when SpeechRecognition is undefined', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).webkitSpeechRecognition = MockSpeechRecognition;
+    testWindow.SpeechRecognition = undefined;
+    testWindow.webkitSpeechRecognition = MockSpeechRecognition;
 
     const handleTranscript = vi.fn();
     render(<VoiceInputButton onTranscript={handleTranscript} />);
@@ -140,19 +170,15 @@ describe('VoiceInputButton Component', () => {
     // Should still render with webkit fallback
     expect(screen.getByRole('button', { name: /start voice input/i })).toBeInTheDocument();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).webkitSpeechRecognition = undefined;
+    testWindow.webkitSpeechRecognition = undefined;
   });
 
   it('returns null when no SpeechRecognition API is available', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).SpeechRecognition = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).webkitSpeechRecognition = undefined;
+    testWindow.SpeechRecognition = undefined;
+    testWindow.webkitSpeechRecognition = undefined;
 
     const handleTranscript = vi.fn();
     const { container } = render(<VoiceInputButton onTranscript={handleTranscript} />);
     expect(container.firstChild).toBeNull();
   });
 });
-
