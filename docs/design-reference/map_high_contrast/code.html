@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>SETU Wayfinding - Route Map (High Contrast)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary-fixed-dim": "#c6c6c7",
+                "inverse-surface": "#000000",
+                "on-primary": "#000000",
+                "on-tertiary-fixed": "#261a00",
+                "on-surface-variant": "#ffffff",
+                "tertiary-fixed-dim": "#f6be39",
+                "error-container": "#ffdad6",
+                "error": "#FFBF00",
+                "on-tertiary-container": "#ffd784",
+                "on-tertiary-fixed-variant": "#5c4300",
+                "surface-tint": "#2ECC71",
+                "tertiary-container": "#7c5b00",
+                "primary-fixed": "#9ff4cc",
+                "on-error-container": "#93000a",
+                "outline-variant": "#ffffff",
+                "on-primary-container": "#98edc6",
+                "tertiary-fixed": "#ffdfa0",
+                "outline": "#ffffff",
+                "surface-variant": "#000000",
+                "on-secondary-fixed-variant": "#ffffff",
+                "surface-container-highest": "#333333",
+                "surface": "#000000",
+                "on-primary-fixed": "#002115",
+                "on-secondary-fixed": "#ffffff",
+                "secondary-container": "#000000",
+                "inverse-primary": "#2ECC71",
+                "surface-bright": "#000000",
+                "on-secondary-container": "#ffffff",
+                "tertiary": "#FFBF00",
+                "secondary-fixed": "#ffffff",
+                "on-primary-fixed-variant": "#005139",
+                "background": "#000000",
+                "inverse-on-surface": "#ffffff",
+                "surface-container-high": "#1a1a1a",
+                "surface-container-lowest": "#000000",
+                "primary-fixed-dim": "#2ECC71",
+                "primary": "#2ECC71",
+                "on-surface": "#ffffff",
+                "surface-container": "#000000",
+                "primary-container": "#000000",
+                "surface-container-low": "#000000",
+                "surface-dim": "#000000",
+                "on-background": "#ffffff",
+                "on-secondary": "#000000",
+                "secondary": "#ffffff",
+                "on-error": "#000000",
+                "on-tertiary": "#000000"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "lg": "24px",
+                "touch-target": "44px",
+                "xs": "4px",
+                "sm": "8px",
+                "unit": "4px",
+                "container-margin": "20px",
+                "xl": "40px",
+                "md": "16px"
+            },
+            "fontFamily": {
+                "headline-md": ["Hanken Grotesk"],
+                "body-md": ["Hanken Grotesk"],
+                "label-caps": ["JetBrains Mono"],
+                "display-lg-mobile": ["Hanken Grotesk"],
+                "display-lg": ["Hanken Grotesk"],
+                "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            font-family: 'Hanken Grotesk', sans-serif;
+            overflow: hidden;
+            color: #ffffff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-canvas {
+            background-image: radial-gradient(circle at 2px 2px, #333333 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .route-path {
+            stroke-dasharray: 8;
+            animation: dash 30s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+        .bottom-sheet {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen dark">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-touch-target bg-black border-b-2 border-white">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-white" data-icon="language">language</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-white tracking-tight">SETU</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform duration-150 p-sm bg-black rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-white" data-icon="accessibility_new">accessibility_new</span>
+</button>
+</div>
+</header>
+<!-- Main Map Area -->
+<main class="flex-grow relative pt-touch-target pb-32 map-canvas flex items-center justify-center overflow-hidden bg-black">
+<!-- Stadium SVG Map -->
+<div class="w-full max-w-2xl px-container-margin animate-in fade-in duration-700">
+<svg class="w-full h-auto drop-shadow-sm" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<!-- Stadium Outer Rim -->
+<path d="M200,20 C100,20 20,80 20,150 C20,220 100,280 200,280 C300,280 380,220 380,150 C380,80 300,20 200,20 Z" fill="black" stroke="#ffffff" stroke-width="3"></path>
+<!-- Inner Pitch -->
+<rect fill="#2ECC71" height="80" opacity="0.2" rx="4" width="120" x="140" y="110"></rect>
+<rect fill="none" height="80" rx="4" stroke="#2ECC71" stroke-width="2" width="120" x="140" y="110"></rect>
+<!-- Sections (simplified) -->
+<g fill="none" stroke="#ffffff" stroke-width="1.5">
+<!-- North Stand -->
+<path d="M120,40 Q200,30 280,40"></path>
+<!-- South Stand -->
+<path d="M120,260 Q200,270 280,260"></path>
+<!-- West Stand -->
+<path d="M50,100 Q40,150 50,200"></path>
+<!-- East Stand -->
+<path d="M350,100 Q360,150 350,200"></path>
+</g>
+<!-- Gate Labels -->
+<g class="font-label-caps text-[8px]" fill="#ffffff">
+<circle cx="200" cy="20" fill="black" r="8" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="font-bold" fill="white" x="194" y="23">G1</text>
+<circle cx="380" cy="150" fill="black" r="8" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="font-bold" fill="white" x="374" y="153">G2</text>
+<circle cx="200" cy="280" fill="black" r="8" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="font-bold" fill="white" x="194" y="283">G3</text>
+<circle cx="20" cy="150" fill="black" r="8" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="font-bold" fill="white" x="14" y="153">G4</text>
+</g>
+<!-- Section Numbers -->
+<text class="font-bold text-[10px]" fill="#ffffff" x="188" y="70">104</text>
+<text class="font-bold text-[10px]" fill="#ffffff" x="188" y="240">122</text>
+<text class="font-bold text-[10px]" fill="#ffffff" x="80" y="155">112</text>
+<text class="font-bold text-[10px]" fill="#ffffff" x="300" y="155">134</text>
+<!-- Highlighted Path (Gate 1 to Section 104) -->
+<path class="route-path" d="M200,20 L200,60" fill="none" stroke="#FFBF00" stroke-linecap="round" stroke-width="5"></path>
+<!-- Start/End Pins -->
+<g>
+<!-- Current Position Pin -->
+<circle cx="200" cy="20" fill="#FFBF00" r="6"></circle>
+<circle cx="200" cy="20" fill="#FFBF00" opacity="0.3" r="12">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="6;14;6"></animate>
+</circle>
+<!-- Destination Pin -->
+<path d="M200,60 L204,52 L196,52 Z" fill="#2ECC71"></path>
+<circle cx="200" cy="50" fill="#2ECC71" r="7"></circle>
+<circle cx="200" cy="50" fill="black" r="2.5"></circle>
+</g>
+</svg>
+</div>
+<!-- Floating Action Controls (Map zoom/locate) -->
+<div class="absolute right-container-margin top-1/2 -translate-y-1/2 flex flex-col gap-sm">
+<button class="w-touch-target h-touch-target bg-black rounded-lg shadow-md border-2 border-white flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white" data-icon="add">add</span>
+</button>
+<button class="w-touch-target h-touch-target bg-black rounded-lg shadow-md border-2 border-white flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white" data-icon="remove">remove</span>
+</button>
+<button class="w-touch-target h-touch-target bg-white text-black rounded-lg shadow-md flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="my_location" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+</div>
+</main>
+<!-- Bottom Sheet Content -->
+<section class="fixed bottom-0 left-0 w-full z-40 bg-black border-t-2 border-white rounded-t-xl shadow-none pb-safe bottom-sheet" id="directionSheet">
+<!-- Drag Handle -->
+<div class="flex justify-center py-sm">
+<div class="w-12 h-1.5 bg-white rounded-full"></div>
+</div>
+<div class="px-container-margin pb-32">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-headline-md text-headline-md-mobile text-white">To Section 104</h2>
+<p class="text-white font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="timer">timer</span>
+                    5 min walk
+                </p>
+</div>
+<!-- Toggle Chip for Step-free -->
+<button class="flex items-center gap-xs px-md py-xs bg-black text-white rounded-full border-2 border-white font-label-caps text-label-caps active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[16px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+                Step-free route
+            </button>
+</div>
+<!-- Steps List -->
+<div class="space-y-md">
+<!-- Current Step -->
+<div class="flex gap-md items-start p-md bg-zinc-900 rounded-xl border-l-4 border-white">
+<div class="w-touch-target h-touch-target bg-white rounded-full flex items-center justify-center text-black flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="straight">straight</span>
+</div>
+<div>
+<p class="font-body-md text-white font-bold">Enter via Gate 1</p>
+<p class="font-label-caps text-label-caps text-white">40 meters ahead</p>
+</div>
+</div>
+<!-- Next Step -->
+<div class="flex gap-md items-start p-md opacity-100">
+<div class="w-touch-target h-touch-target bg-black border-2 border-white rounded-full flex items-center justify-center text-white flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="turn_right">turn_right</span>
+</div>
+<div>
+<p class="font-body-md text-white">Turn right at Ramp A</p>
+<p class="font-label-caps text-label-caps text-white">Level 1 Concourse</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-black border-t-2 border-white shadow-none rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-white hover:bg-zinc-800 rounded-lg p-2 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-caps text-[10px]">Concierge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white font-bold border-b-2 border-white rounded-none p-2 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-caps text-[10px]">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white hover:bg-zinc-800 rounded-lg p-2 active:scale-90 transition-all duration-200 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-caps text-[10px]">Alerts</span>
+<span class="absolute top-1 right-3 w-2.5 h-2.5 bg-[#FFBF00] border-2 border-black rounded-full"></span>
+</button>
+<button class="flex flex-col items-center justify-center text-white hover:bg-zinc-800 rounded-lg p-2 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-[10px]">Ops</span>
+</button>
+</nav>
+<script>
+    const sheet = document.getElementById('directionSheet');
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    sheet.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+    });
+
+    sheet.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+        if (diff > 0) {
+            sheet.style.transform = `translateY(${diff}px)`;
+        }
+    });
+
+    sheet.addEventListener('touchend', () => {
+        isDragging = false;
+        const diff = currentY - startY;
+        if (diff > 100) {
+            sheet.style.transform = `translateY(180px)`;
+        } else {
+            sheet.style.transform = `translateY(0)`;
+        }
+    });
+</script>
+</body></html>

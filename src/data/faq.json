@@ -1,0 +1,92 @@
+[
+  {
+    "id": "faq-tickets-1",
+    "topic": "tickets",
+    "tags": ["mobile ticket", "entry", "gate", "scan", "qr"],
+    "answer_en": "Your mobile ticket is inside the official FIFA app or your ticket email. Screenshots are NOT accepted at gates — you must show the animated QR code. Ensure your screen brightness is high before approaching the gate scanner."
+  },
+  {
+    "id": "faq-tickets-2",
+    "topic": "tickets",
+    "tags": ["lost ticket", "ticket support", "reissue"],
+    "answer_en": "If your ticket is lost or not loading, visit the Ticket Help Desk near Gate 1 or Gate 5. Bring your booking confirmation email and a valid photo ID. Allow at least 30 minutes before kick-off."
+  },
+  {
+    "id": "faq-prohibited-1",
+    "topic": "prohibited",
+    "tags": ["prohibited items", "banned", "not allowed", "security", "bag"],
+    "answer_en": "Prohibited items include: glass bottles, cans, weapons, drones, selfie sticks over 25cm, large umbrellas, and political banners. Bags must not exceed 30x20x15cm. All bags are searched at entry."
+  },
+  {
+    "id": "faq-prohibited-2",
+    "topic": "prohibited",
+    "tags": ["food", "drink", "water", "outside food"],
+    "answer_en": "Outside food and sealed water bottles up to 500ml are permitted. Alcoholic beverages from outside are prohibited. Water refill stations are available free of charge near the Central Hub."
+  },
+  {
+    "id": "faq-transit-1",
+    "topic": "transit",
+    "tags": ["transport", "bus", "metro", "shuttle", "getting here", "parking"],
+    "answer_en": "The official match-day shuttle runs every 10 minutes from Central Station directly to Gate 1. The nearest metro station is Stadium Metro (Blue Line, Exit 3). Parking is available in Lots A–D but is heavily congested on match days — public transit is strongly recommended."
+  },
+  {
+    "id": "faq-transit-2",
+    "topic": "transit",
+    "tags": ["taxi", "ride share", "uber", "drop off"],
+    "answer_en": "Taxi and ride-share drop-off is at the designated zone on Stadium Road North, a 5-minute walk from Gate 1. Do not ask drivers to drop you at the gates — the road is closed to non-official vehicles on match days."
+  },
+  {
+    "id": "faq-amenities-1",
+    "topic": "amenities",
+    "tags": ["restroom", "bathroom", "toilet", "accessible restroom", "wheelchair"],
+    "answer_en": "Accessible restrooms (step-free, spacious, with grab rails) are located at the North Concourse (Restroom A) and South Concourse (Restroom C). Standard restrooms are at Restroom B (East) and Restroom D (SE). All restrooms are signposted with universal symbols."
+  },
+  {
+    "id": "faq-amenities-2",
+    "topic": "amenities",
+    "tags": ["food", "eat", "drinks", "vendor", "concession"],
+    "answer_en": "Food is available at the Food Court North (near Gate 1), Food Court South (near Gate 5), and Snack Bar East (near Gate 3). Vegetarian, vegan, and halal options are available at all locations. Prices are displayed in USD."
+  },
+  {
+    "id": "faq-amenities-3",
+    "topic": "amenities",
+    "tags": ["medical", "first aid", "doctor", "ambulance", "health"],
+    "answer_en": "The Medical Station is located at the Central Hub. For immediate emergencies, alert any steward wearing a green vest — they have direct radio contact with the medical team. Do not call for an ambulance yourself; the venue has its own emergency response."
+  },
+  {
+    "id": "faq-amenities-4",
+    "topic": "amenities",
+    "tags": ["water", "refill", "free water", "hydration"],
+    "answer_en": "Free water refill stations are available at the Central Hub. Bring a reusable bottle to help reduce plastic waste. This is also part of the venue's FIFA sustainability programme."
+  },
+  {
+    "id": "faq-accessibility-1",
+    "topic": "accessibility",
+    "tags": ["wheelchair", "disabled", "mobility", "accessible entrance", "ramp"],
+    "answer_en": "Wheelchair users and fans with limited mobility should use Gates 1, 4, 5, or 6 — all have step-free ramp access. Dedicated accessible seating is in Sections 101 and 201 (reachable via the elevators near the North and South Concourses). An accessibility assistance desk is near Gate 1."
+  },
+  {
+    "id": "faq-accessibility-2",
+    "topic": "accessibility",
+    "tags": ["hearing loop", "deaf", "hearing impaired", "caption", "sign language"],
+    "answer_en": "The stadium offers an induction hearing loop in all seated areas. Real-time caption screens are positioned throughout the concourses. BSL/ASL interpretation is available at the main information desk near Gate 5 for pre-booked requests."
+  },
+  {
+    "id": "faq-wifi-1",
+    "topic": "connectivity",
+    "tags": ["wifi", "internet", "phone", "signal", "connectivity"],
+    "answer_en": "Free stadium Wi-Fi is available: network name 'FWC2026-Stadium', no password required. Coverage may be intermittent in densely crowded areas. The Setu app works offline — it caches all maps and FAQs automatically."
+  },
+  {
+    "id": "faq-lost-found-1",
+    "topic": "lost_found",
+    "tags": ["lost", "found", "missing", "belongings", "bag", "child"],
+    "answer_en": "Lost and Found is located near Gate 6 on the West side. For lost children, go immediately to any steward or the Lost Child Point near Gate 1 — staff will make a PA announcement within 2 minutes."
+  },
+  {
+    "id": "faq-safety-1",
+    "topic": "safety",
+    "tags": ["emergency", "evacuation", "fire", "exit", "alarm"],
+    "answer_en": "In case of an emergency alarm, walk calmly to the nearest lit EXIT sign. Do not run. Follow steward instructions. Emergency exits are on all four sides of the stadium. Do not use elevators during an evacuation."
+  }
+]

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>SETU | AI Concierge (High Contrast)</title>
+<!-- Google Fonts: Hanken Grotesk for Body/Headlines & JetBrains Mono for Labels -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "inverse-surface": "#ffffff",
+                    "on-primary": "#000000",
+                    "on-tertiary-fixed": "#000000",
+                    "on-surface-variant": "#ffffff",
+                    "tertiary-fixed-dim": "#FFBF00",
+                    "error-container": "#ffdad6",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#000000",
+                    "on-tertiary-fixed-variant": "#000000",
+                    "surface-tint": "#2ECC71",
+                    "tertiary-container": "#FFBF00",
+                    "primary-fixed": "#2ECC71",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#ffffff",
+                    "on-primary-container": "#000000",
+                    "tertiary-fixed": "#FFBF00",
+                    "outline": "#ffffff",
+                    "surface-variant": "#1a1c1e",
+                    "on-secondary-fixed-variant": "#ffffff",
+                    "surface-container-highest": "#333333",
+                    "surface": "#000000",
+                    "on-primary-fixed": "#000000",
+                    "on-secondary-fixed": "#000000",
+                    "secondary-container": "#333333",
+                    "inverse-primary": "#2ECC71",
+                    "surface-bright": "#1a1c1e",
+                    "on-secondary-container": "#ffffff",
+                    "tertiary": "#FFBF00",
+                    "secondary-fixed": "#ffffff",
+                    "on-primary-fixed-variant": "#000000",
+                    "background": "#000000",
+                    "inverse-on-surface": "#000000",
+                    "surface-container-high": "#262626",
+                    "surface-container-lowest": "#000000",
+                    "primary-fixed-dim": "#2ECC71",
+                    "primary": "#2ECC71",
+                    "on-surface": "#ffffff",
+                    "surface-container": "#121212",
+                    "primary-container": "#2ECC71",
+                    "surface-container-low": "#0a0a0a",
+                    "surface-dim": "#000000",
+                    "on-background": "#ffffff",
+                    "on-secondary": "#000000",
+                    "secondary": "#ffffff",
+                    "on-error": "#000000",
+                    "on-tertiary": "#000000"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "touch-target": "44px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "container-margin": "20px",
+                    "xl": "40px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "display-lg-mobile": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffffff;
+            border-radius: 10px;
+        }
+        /* Asymmetrical bubble rounding per style guidance */
+        .bubble-ai {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border: 1px solid #ffffff;
+        }
+        .bubble-user {
+            border-top-left-radius: 20px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border: 1px solid #2ECC71;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-touch-target bg-background border-b-2 border-white">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md-mobile font-bold text-primary tracking-tight">SETU</span>
+</div>
+<div class="flex items-center gap-md">
+<!-- Language Pill -->
+<button class="flex items-center gap-xs px-sm py-1 bg-background rounded-full hover:bg-surface-container border-2 border-white transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="language">language</span>
+<span class="font-label-caps text-label-caps">EN</span>
+</button>
+<!-- Accessibility Icon -->
+<button class="w-touch-target h-touch-target flex items-center justify-center text-white hover:bg-surface-container rounded-full transition-all active:scale-95 border-2 border-transparent">
+<span class="material-symbols-outlined" data-icon="accessibility_new">accessibility_new</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-touch-target pb-[200px] min-h-screen max-w-3xl mx-auto px-container-margin">
+<!-- Welcome Section -->
+<section class="mt-xl mb-lg">
+<div class="flex flex-col items-center text-center space-y-sm">
+<div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile text-primary">Ask me anything about today's match</h1>
+<p class="font-body-md text-white max-w-[280px]">Your personal guide for the FIFA World Cup 2026 stadium experience.</p>
+</div>
+</section>
+<!-- Chat History -->
+<section class="space-y-md custom-scrollbar" id="chat-history">
+<!-- AI Bubble -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="bubble-ai bg-surface-container-high p-md text-white shadow-sm">
+<p class="font-body-md">Hello! I'm your SETU Concierge. I can help you find your way around the stadium, check gate wait times, or locate the nearest amenities. How can I assist you today?</p>
+</div>
+<span class="mt-xs ml-sm font-label-caps text-[10px] text-white opacity-100 transition-opacity">14:02 · AI</span>
+</div>
+<!-- User Bubble -->
+<div class="flex flex-col items-end ml-auto max-w-[85%] group">
+<div class="bubble-user bg-primary p-md text-on-primary shadow-sm">
+<p class="font-body-md">Where is the nearest fan zone?</p>
+</div>
+<span class="mt-xs mr-sm font-label-caps text-[10px] text-white opacity-100 transition-opacity">14:05 · YOU</span>
+</div>
+<!-- AI Bubble -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="bubble-ai bg-surface-container-high p-md text-white shadow-sm">
+<p class="font-body-md">The main FIFA Fan Festival is located at the South Plaza, just a 5-minute walk from your current location at Section 104. Would you like a map route?</p>
+</div>
+<span class="mt-xs ml-sm font-label-caps text-[10px] text-white opacity-100 transition-opacity">14:05 · AI</span>
+</div>
+</section>
+</main>
+<!-- Sticky Input & Quick Replies -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-background border-t-2 border-white pb-safe">
+<!-- Quick Reply Chips -->
+<div class="flex gap-sm overflow-x-auto px-container-margin py-sm no-scrollbar">
+<button class="flex-none px-md h-touch-target rounded-full border-2 border-primary text-primary font-bold hover:bg-primary hover:text-on-primary transition-colors flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Find my seat')">
+                Find my seat
+            </button>
+<button class="flex-none px-md h-touch-target rounded-full border-2 border-primary text-primary font-bold hover:bg-primary hover:text-on-primary transition-colors flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Nearest restroom')">
+                Nearest restroom
+            </button>
+<button class="flex-none px-md h-touch-target rounded-full border-2 border-primary text-primary font-bold hover:bg-primary hover:text-on-primary transition-colors flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Is Gate 3 busy?')">
+                Is Gate 3 busy?
+            </button>
+</div>
+<!-- Text Input Area -->
+<div class="px-container-margin pb-md pt-xs">
+<div class="relative flex items-center bg-black rounded-xl border-2 border-white shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary transition-all">
+<input class="flex-1 h-[56px] px-md bg-transparent border-none focus:ring-0 font-body-md text-white placeholder-white/60" placeholder="Type a message..." type="text"/>
+<div class="flex items-center gap-xs pr-sm">
+<button class="w-touch-target h-touch-target flex items-center justify-center text-white hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center bg-primary text-on-primary rounded-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (The Anchor) -->
+<nav class="h-[72px] flex justify-around items-center border-t-2 border-white bg-black px-4">
+<!-- Active: Concierge -->
+<button class="flex flex-col items-center justify-center text-primary transition-all duration-200 active:scale-90">
+<span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-label-caps text-label-caps mt-xs">Concierge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white hover:text-tertiary transition-all duration-200 active:scale-90">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-caps text-label-caps mt-xs">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white hover:text-tertiary transition-all duration-200 active:scale-90">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-caps text-label-caps mt-xs">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white hover:text-tertiary transition-all duration-200 active:scale-90">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps mt-xs">Ops</span>
+</button>
+</nav>
+</div>
+<script>
+        // Simple Interaction logic
+        function sendQuickReply(text) {
+            const chatHistory = document.getElementById('chat-history');
+            
+            // Append User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex flex-col items-end ml-auto max-w-[85%] group animate-in slide-in-from-right duration-300';
+            userMsg.innerHTML = `
+                <div class="bubble-user bg-primary p-md text-on-primary shadow-sm">
+                    <p class="font-body-md">${text}</p>
+                </div>
+                <span class="mt-xs mr-sm font-label-caps text-[10px] text-white">JUST NOW · YOU</span>
+            `;
+            chatHistory.appendChild(userMsg);
+            
+            // Scroll to bottom
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+            // Simulate AI response delay
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'flex flex-col items-start max-w-[85%] group animate-in slide-in-from-left duration-300';
+                aiMsg.innerHTML = `
+                    <div class="bubble-ai bg-surface-container-high p-md text-white shadow-sm">
+                        <p class="font-body-md">Searching for "${text}"... One moment while I retrieve live stadium data for you.</p>
+                    </div>
+                    <span class="mt-xs ml-sm font-label-caps text-[10px] text-white">JUST NOW · AI</span>
+                `;
+                chatHistory.appendChild(aiMsg);
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 800);
+        }
+
+        // Handle scroll behavior to hide header slightly or change opacity
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const header = document.querySelector('header');
+            if (currentScroll > 50) {
+                header.classList.add('shadow-lg', 'bg-black/95');
+            } else {
+                header.classList.remove('shadow-lg', 'bg-black/95');
+            }
+        });
+    </script>
+</body></html>

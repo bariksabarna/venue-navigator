@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>SETU | AI Concierge Desktop</title>
+<!-- Google Fonts: Hanken Grotesk for Body/Headlines & JetBrains Mono for Labels -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "inverse-surface": "#2f3133",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed": "#261a00",
+                    "on-surface-variant": "#3f4943",
+                    "tertiary-fixed-dim": "#f6be39",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffd784",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "surface-tint": "#056c4d",
+                    "tertiary-container": "#7c5b00",
+                    "primary-fixed": "#9ff4cc",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#bec9c1",
+                    "on-primary-container": "#98edc6",
+                    "tertiary-fixed": "#ffdfa0",
+                    "outline": "#6f7a73",
+                    "surface-variant": "#e2e2e5",
+                    "on-secondary-fixed-variant": "#454747",
+                    "surface-container-highest": "#e2e2e5",
+                    "surface": "#f9f9fc",
+                    "on-primary-fixed": "#002115",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "secondary-container": "#dfe0e0",
+                    "inverse-primary": "#83d7b1",
+                    "surface-bright": "#f9f9fc",
+                    "on-secondary-container": "#616363",
+                    "tertiary": "#5e4500",
+                    "secondary-fixed": "#e2e2e2",
+                    "on-primary-fixed-variant": "#005139",
+                    "background": "#f9f9fc",
+                    "inverse-on-surface": "#f0f0f3",
+                    "surface-container-high": "#e8e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#83d7b1",
+                    "primary": "#00543b",
+                    "on-surface": "#1a1c1e",
+                    "surface-container": "#eeeef0",
+                    "primary-container": "#0b6e4f",
+                    "surface-container-low": "#f3f3f6",
+                    "surface-dim": "#dadadc",
+                    "on-background": "#1a1c1e",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#5d5f5f",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "touch-target": "44px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "container-margin": "20px",
+                    "xl": "40px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "display-lg-mobile": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c1;
+            border-radius: 10px;
+        }
+        /* Asymmetrical bubble rounding */
+        .bubble-ai {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
+            border-bottom-left-radius: 24px;
+        }
+        .bubble-user {
+            border-top-left-radius: 24px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 24px;
+            border-bottom-left-radius: 24px;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed flex flex-col h-screen overflow-hidden">
+<!-- Expanded Desktop Header -->
+<header class="w-full z-50 bg-surface border-b border-outline-variant shrink-0">
+<div class="max-w-[1400px] mx-auto h-20 px-xl flex justify-between items-center">
+<!-- Logo & Main Nav -->
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-sm">
+<span class="font-display-lg text-4xl font-extrabold text-primary tracking-tighter">SETU</span>
+</div>
+<nav class="hidden md:flex items-center gap-md ml-xl">
+<a class="flex items-center gap-xs text-primary font-bold px-md py-sm rounded-lg bg-primary-container/10" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-label-caps uppercase tracking-widest text-[13px]">Concierge</span>
+</a>
+<a class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors px-md py-sm" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps uppercase tracking-widest text-[13px]">Stadium Map</span>
+</a>
+<a class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors px-md py-sm" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-caps uppercase tracking-widest text-[13px]">Alerts</span>
+</a>
+<a class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors px-md py-sm" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps uppercase tracking-widest text-[13px]">Operations</span>
+</a>
+</nav>
+</div>
+<!-- Utilities -->
+<div class="flex items-center gap-lg">
+<!-- Language Selection -->
+<button class="flex items-center gap-sm px-md py-2 bg-surface-container-low rounded-full hover:bg-surface-variant transition-colors border border-outline-variant group">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">language</span>
+<span class="font-label-caps text-sm">ENGLISH</span>
+<span class="material-symbols-outlined text-[18px] opacity-50">keyboard_arrow_down</span>
+</button>
+<!-- Accessibility -->
+<button class="w-12 h-12 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-full transition-all border border-transparent hover:border-outline-variant">
+<span class="material-symbols-outlined text-[28px]">accessibility_new</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden max-w-[1400px] mx-auto w-full">
+<!-- Optional Sidebar (Signage/Info Context) -->
+<aside class="hidden lg:flex w-[300px] border-r border-outline-variant flex-col p-xl gap-xl bg-surface-container-lowest">
+<div class="space-y-md">
+<h3 class="font-label-caps text-xs text-outline uppercase tracking-widest">Match Information</h3>
+<div class="p-lg bg-surface-container rounded-xl border border-outline-variant">
+<p class="font-body-md font-bold text-on-surface">Finals: BRA vs FRA</p>
+<p class="font-body-md text-on-surface-variant text-sm mt-xs">Kick-off: 20:00 (Local)</p>
+</div>
+</div>
+<div class="space-y-md">
+<h3 class="font-label-caps text-xs text-outline uppercase tracking-widest">Current Status</h3>
+<ul class="space-y-sm">
+<li class="flex items-center gap-sm text-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    Stadium Capacity: 94%
+                </li>
+<li class="flex items-center gap-sm text-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                    Gate 3 Wait: 12m
+                </li>
+</ul>
+</div>
+</aside>
+<!-- Main Large-Scale Chat Canvas -->
+<main class="flex-1 flex flex-col relative bg-white">
+<!-- Chat Scrollable Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-container-margin md:px-0">
+<div class="max-w-[800px] mx-auto py-xl space-y-xl">
+<!-- Large Welcome Section -->
+<section class="flex flex-col items-center text-center space-y-md mb-xl pt-lg">
+<div class="w-24 h-24 bg-primary rounded-3xl flex items-center justify-center text-on-primary shadow-lg">
+<span class="material-symbols-outlined text-6xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="space-y-xs">
+<h1 class="font-display-lg text-primary">How can I help you today?</h1>
+<p class="font-body-lg text-on-surface-variant max-w-[500px]">I'm your official FIFA 2026 AI Concierge. Ask me about gates, restrooms, amenities, or stadium directions.</p>
+</div>
+</section>
+<!-- Chat History -->
+<div class="space-y-lg px-md" id="chat-history">
+<!-- AI Bubble -->
+<div class="flex flex-col items-start max-w-[85%] lg:max-w-[75%] group">
+<div class="bubble-ai bg-surface-container-high p-lg text-on-surface shadow-sm border border-outline-variant/30">
+<p class="font-body-lg">Hello! I'm your SETU Concierge. I have access to real-time stadium data. I can help you find your way around, check gate wait times, or locate the nearest amenities. How can I assist you today?</p>
+</div>
+<div class="flex items-center gap-sm mt-sm ml-sm">
+<span class="font-label-caps text-[11px] text-on-surface-variant">14:02 · SETU AI</span>
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="material-symbols-outlined text-sm hover:text-primary">thumb_up</button>
+<button class="material-symbols-outlined text-sm hover:text-primary">thumb_down</button>
+</div>
+</div>
+</div>
+<!-- User Bubble -->
+<div class="flex flex-col items-end ml-auto max-w-[85%] lg:max-w-[75%] group">
+<div class="bubble-user bg-primary p-lg text-on-primary shadow-md">
+<p class="font-body-lg">Where is the nearest fan zone?</p>
+</div>
+<span class="mt-sm mr-sm font-label-caps text-[11px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">14:05 · YOU</span>
+</div>
+<!-- AI Bubble -->
+<div class="flex flex-col items-start max-w-[85%] lg:max-w-[75%] group">
+<div class="bubble-ai bg-surface-container-high p-lg text-on-surface shadow-sm border border-outline-variant/30">
+<p class="font-body-lg">The main FIFA Fan Festival is located at the South Plaza, just a 5-minute walk from your current location at Section 104. Would you like me to display the fastest route on your stadium map?</p>
+</div>
+<div class="flex items-center gap-sm mt-sm ml-sm">
+<span class="font-label-caps text-[11px] text-on-surface-variant">14:05 · SETU AI</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Interaction Area -->
+<div class="shrink-0 bg-surface/80 backdrop-blur-xl border-t border-outline-variant py-lg">
+<div class="max-w-[800px] mx-auto px-md">
+<!-- Prominent Quick Reply Chips -->
+<div class="flex gap-md overflow-x-auto pb-lg no-scrollbar">
+<button class="flex-none px-xl h-12 rounded-full border border-primary text-primary font-body-md font-bold hover:bg-primary-container/10 transition-all flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Find my seat')">
+<span class="material-symbols-outlined mr-sm text-[20px]">airline_seat_recline_extra</span>
+                        Find my seat
+                    </button>
+<button class="flex-none px-xl h-12 rounded-full border border-primary text-primary font-body-md font-bold hover:bg-primary-container/10 transition-all flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Nearest restroom')">
+<span class="material-symbols-outlined mr-sm text-[20px]">wc</span>
+                        Nearest restroom
+                    </button>
+<button class="flex-none px-xl h-12 rounded-full border border-primary text-primary font-body-md font-bold hover:bg-primary-container/10 transition-all flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Is Gate 3 busy?')">
+<span class="material-symbols-outlined mr-sm text-[20px]">door_front</span>
+                        Is Gate 3 busy?
+                    </button>
+<button class="flex-none px-xl h-12 rounded-full border border-primary text-primary font-body-md font-bold hover:bg-primary-container/10 transition-all flex items-center whitespace-nowrap active:scale-95" onclick="sendQuickReply('Food &amp; Drinks')">
+<span class="material-symbols-outlined mr-sm text-[20px]">fastfood</span>
+                        Food &amp; Drinks
+                    </button>
+</div>
+<!-- Large Text Input Area -->
+<div class="relative flex items-center bg-surface-container-lowest rounded-2xl border border-outline shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all group">
+<input class="flex-1 h-16 px-xl bg-transparent border-none focus:ring-0 font-body-lg text-on-surface" id="chat-input" placeholder="Type your question here (e.g. 'How do I get to Gate 5?')..." type="text"/>
+<div class="flex items-center gap-md pr-md">
+<button class="w-12 h-12 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[28px]" data-icon="mic">mic</span>
+</button>
+<button class="px-xl h-12 bg-primary text-on-primary rounded-xl font-bold flex items-center gap-sm hover:bg-primary/90 active:scale-95 transition-all shadow-md" onclick="handleSend()">
+<span>Send</span>
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+<p class="text-center text-[11px] text-on-surface-variant mt-md opacity-60">SETU AI may display inaccurate location info during peak crowd movements. Follow on-site signage for safety.</p>
+</div>
+</div>
+</main>
+</div>
+<script>
+    const chatInput = document.getElementById('chat-input');
+    const chatHistory = document.getElementById('chat-history');
+
+    function handleSend() {
+        const text = chatInput.value.trim();
+        if (text) {
+            sendQuickReply(text);
+            chatInput.value = '';
+        }
+    }
+
+    // Allow Enter key to send
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+
+    function sendQuickReply(text) {
+        // Append User Message
+        const userMsg = document.createElement('div');
+        userMsg.className = 'flex flex-col items-end ml-auto max-w-[85%] lg:max-w-[75%] group animate-in slide-in-from-bottom-4 duration-300';
+        userMsg.innerHTML = `
+            <div class="bubble-user bg-primary p-lg text-on-primary shadow-md">
+                <p class="font-body-lg">${text}</p>
+            </div>
+            <span class="mt-sm mr-sm font-label-caps text-[11px] text-on-surface-variant uppercase">JUST NOW · YOU</span>
+        `;
+        chatHistory.appendChild(userMsg);
+        
+        // Scroll to bottom
+        const chatContainer = chatHistory.parentElement.parentElement;
+        chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+
+        // Simulate AI response delay
+        setTimeout(() => {
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'flex flex-col items-start max-w-[85%] lg:max-w-[75%] group animate-in fade-in duration-500';
+            aiMsg.innerHTML = `
+                <div class="bubble-ai bg-surface-container-high p-lg text-on-surface shadow-sm border border-outline-variant/30">
+                    <p class="font-body-lg">Searching for "${text}" across stadium sensors... One moment while I retrieve live data for you.</p>
+                </div>
+                <div class="flex items-center gap-sm mt-sm ml-sm">
+                    <span class="font-label-caps text-[11px] text-on-surface-variant">JUST NOW · SETU AI</span>
+                </div>
+            `;
+            chatHistory.appendChild(aiMsg);
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }, 800);
+    }
+</script>
+</body></html>

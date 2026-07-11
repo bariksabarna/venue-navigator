@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>SETU Wayfinding - Route Map</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary-fixed-dim": "#c6c6c7",
+                "inverse-surface": "#2f3133",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#261a00",
+                "on-surface-variant": "#3f4943",
+                "tertiary-fixed-dim": "#f6be39",
+                "error-container": "#ffdad6",
+                "error": "#ba1a1a",
+                "on-tertiary-container": "#ffd784",
+                "on-tertiary-fixed-variant": "#5c4300",
+                "surface-tint": "#056c4d",
+                "tertiary-container": "#7c5b00",
+                "primary-fixed": "#9ff4cc",
+                "on-error-container": "#93000a",
+                "outline-variant": "#bec9c1",
+                "on-primary-container": "#98edc6",
+                "tertiary-fixed": "#ffdfa0",
+                "outline": "#6f7a73",
+                "surface-variant": "#e2e2e5",
+                "on-secondary-fixed-variant": "#454747",
+                "surface-container-highest": "#e2e2e5",
+                "surface": "#f9f9fc",
+                "on-primary-fixed": "#002115",
+                "on-secondary-fixed": "#1a1c1c",
+                "secondary-container": "#dfe0e0",
+                "inverse-primary": "#83d7b1",
+                "surface-bright": "#f9f9fc",
+                "on-secondary-container": "#616363",
+                "tertiary": "#5e4500",
+                "secondary-fixed": "#e2e2e2",
+                "on-primary-fixed-variant": "#005139",
+                "background": "#f9f9fc",
+                "inverse-on-surface": "#f0f0f3",
+                "surface-container-high": "#e8e8ea",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed-dim": "#83d7b1",
+                "primary": "#00543b",
+                "on-surface": "#1a1c1e",
+                "surface-container": "#eeeef0",
+                "primary-container": "#0b6e4f",
+                "surface-container-low": "#f3f3f6",
+                "surface-dim": "#dadadc",
+                "on-background": "#1a1c1e",
+                "on-secondary": "#ffffff",
+                "secondary": "#5d5f5f",
+                "on-error": "#ffffff",
+                "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "lg": "24px",
+                "touch-target": "44px",
+                "xs": "4px",
+                "sm": "8px",
+                "unit": "4px",
+                "container-margin": "20px",
+                "xl": "40px",
+                "md": "16px"
+            },
+            "fontFamily": {
+                "headline-md": ["Hanken Grotesk"],
+                "body-md": ["Hanken Grotesk"],
+                "label-caps": ["JetBrains Mono"],
+                "display-lg-mobile": ["Hanken Grotesk"],
+                "display-lg": ["Hanken Grotesk"],
+                "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9fc;
+            font-family: 'Hanken Grotesk', sans-serif;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-canvas {
+            background-image: radial-gradient(circle at 2px 2px, #e2e2e5 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .route-path {
+            stroke-dasharray: 8;
+            animation: dash 30s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+        /* Custom scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6f7a73;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+<!-- Desktop Header -->
+<header class="flex-shrink-0 h-16 w-full z-50 flex justify-between items-center px-lg bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary text-3xl" data-icon="language">language</span>
+<h1 class="font-headline-md text-2xl font-bold text-primary dark:text-primary-fixed-dim tracking-tight">SETU</h1>
+</div>
+<!-- Desktop Nav Items -->
+<nav class="hidden md:flex items-center gap-lg">
+<button class="flex items-center gap-xs px-md py-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-caps">Concierge</span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm text-primary font-bold bg-primary-container/20 rounded-lg">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-caps">Map</span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-caps">Alerts</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps">Operations</span>
+</button>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform duration-150 p-sm hover:bg-surface-container-low dark:hover:bg-secondary-container rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-on-secondary-fixed-variant" data-icon="accessibility_new">accessibility_new</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-fixed-variant font-bold">
+                JS
+            </div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Persistent Side Panel (Directions) -->
+<aside class="w-96 flex-shrink-0 bg-surface border-r border-outline-variant flex flex-col z-40">
+<div class="p-lg border-b border-outline-variant">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-headline-md text-on-surface">To Section 104</h2>
+<p class="text-primary font-bold flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="timer">timer</span>
+                            5 min walk (240m)
+                        </p>
+</div>
+</div>
+<!-- Highly Visible Step-free Toggle -->
+<button class="w-full flex items-center justify-between gap-md px-md py-sm bg-primary-container text-on-primary-fixed-variant rounded-xl border-2 border-primary active:scale-[0.98] transition-all group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-2xl" data-icon="accessible">accessible</span>
+<span class="font-bold">Step-free route</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative p-1 flex items-center justify-end">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</button>
+</div>
+<!-- Directions List -->
+<div class="flex-1 overflow-y-auto p-lg space-y-lg custom-scrollbar">
+<h3 class="font-label-caps text-on-surface-variant uppercase tracking-widest text-xs">Navigation Steps</h3>
+<!-- Current Step -->
+<div class="flex gap-md items-start p-md bg-primary-container/10 rounded-xl border-l-8 border-primary shadow-sm">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-on-primary flex-shrink-0 shadow-lg">
+<span class="material-symbols-outlined text-2xl" data-icon="straight">straight</span>
+</div>
+<div>
+<p class="text-lg text-on-surface font-bold">Enter via Gate 1</p>
+<p class="text-on-surface-variant mt-1">Head towards the North Stand turnstiles. Your ticket is ready for scanning.</p>
+<p class="font-label-caps text-xs text-primary font-bold mt-sm bg-primary/10 inline-block px-2 py-0.5 rounded">40 meters ahead</p>
+</div>
+</div>
+<!-- Next Step -->
+<div class="flex gap-md items-start p-md border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="w-12 h-12 bg-surface-container-highest rounded-full flex items-center justify-center text-on-surface-variant flex-shrink-0 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="turn_right">turn_right</span>
+</div>
+<div>
+<p class="text-lg text-on-surface font-bold">Turn right at Ramp A</p>
+<p class="text-on-surface-variant mt-1">Follow signs for "Level 1 Concourse" and Sections 100-110.</p>
+<p class="font-label-caps text-xs text-on-surface-variant mt-sm">In 120 meters</p>
+</div>
+</div>
+<!-- Future Step -->
+<div class="flex gap-md items-start p-md border border-outline-variant/50 rounded-xl opacity-60">
+<div class="w-12 h-12 bg-surface-container-highest rounded-full flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="material-symbols-outlined text-2xl" data-icon="stairs">stairs</span>
+</div>
+<div>
+<p class="text-lg text-on-surface font-bold">Take Elevator 4 to Level 1</p>
+<p class="text-on-surface-variant mt-1">Located next to the refreshments stand.</p>
+<p class="font-label-caps text-xs text-on-surface-variant mt-sm">Final Stage</p>
+</div>
+</div>
+</div>
+<!-- Footer Action in Sidebar -->
+<div class="p-lg bg-surface-container-low border-t border-outline-variant">
+<button class="w-full bg-inverse-surface text-inverse-on-surface py-md px-lg rounded-xl font-bold flex items-center justify-center gap-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+                    Share Live Location
+                </button>
+</div>
+</aside>
+<!-- Main Map Area (Expanded) -->
+<main class="flex-grow relative map-canvas flex items-center justify-center overflow-hidden bg-surface-container-lowest">
+<!-- Stadium SVG Map - Larger for Desktop -->
+<div class="w-full h-full p-xl flex items-center justify-center">
+<div class="w-full max-w-5xl h-full animate-in fade-in zoom-in duration-700">
+<svg class="w-full h-full drop-shadow-2xl" preserveaspectratio="xMidYMid meet" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<!-- Stadium Outer Rim -->
+<path d="M200,20 C100,20 20,80 20,150 C20,220 100,280 200,280 C300,280 380,220 380,150 C380,80 300,20 200,20 Z" fill="white" stroke="#6f7a73" stroke-width="1.5"></path>
+<!-- Inner Pitch -->
+<rect fill="#00543b" height="80" opacity="0.05" rx="4" width="120" x="140" y="110"></rect>
+<rect fill="none" height="80" rx="4" stroke="#00543b" stroke-opacity="0.2" stroke-width="1" width="120" x="140" y="110"></rect>
+<!-- Sections -->
+<g fill="none" stroke="#bec9c1" stroke-width="0.5">
+<path d="M120,40 Q200,30 280,40"></path>
+<path d="M120,260 Q200,270 280,260"></path>
+<path d="M50,100 Q40,150 50,200"></path>
+<path d="M350,100 Q360,150 350,200"></path>
+</g>
+<!-- Gate Labels -->
+<g class="font-label-caps text-[7px]" fill="#3f4943">
+<circle cx="200" cy="20" fill="white" r="6" stroke="#6f7a73"></circle>
+<text class="font-bold" x="196" y="22.5">G1</text>
+<circle cx="380" cy="150" fill="white" r="6" stroke="#6f7a73"></circle>
+<text class="font-bold" x="376" y="152.5">G2</text>
+<circle cx="200" cy="280" fill="white" r="6" stroke="#6f7a73"></circle>
+<text class="font-bold" x="196" y="282.5">G3</text>
+<circle cx="20" cy="150" fill="white" r="6" stroke="#6f7a73"></circle>
+<text class="font-bold" x="16" y="152.5">G4</text>
+</g>
+<!-- Section Numbers -->
+<text class="font-bold text-[8px]" fill="#6f7a73" x="190" y="60">104</text>
+<text class="font-bold text-[8px]" fill="#6f7a73" x="190" y="250">122</text>
+<text class="font-bold text-[8px]" fill="#6f7a73" x="80" y="155">112</text>
+<text class="font-bold text-[8px]" fill="#6f7a73" x="300" y="155">134</text>
+<!-- Highlighted Path -->
+<path class="route-path" d="M200,20 L200,50" fill="none" stroke="#00543b" stroke-linecap="round" stroke-width="3"></path>
+<!-- Start/End Pins -->
+<g>
+<!-- Current Position -->
+<circle cx="200" cy="20" fill="#ba1a1a" r="4"></circle>
+<circle cx="200" cy="20" fill="#ba1a1a" opacity="0.15" r="8">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="4;10;4"></animate>
+</circle>
+<!-- Destination -->
+<path d="M200,50 L203,44 L197,44 Z" fill="#00543b"></path>
+<circle cx="200" cy="42" fill="#00543b" r="5"></circle>
+<circle cx="200" cy="42" fill="white" r="1.5"></circle>
+</g>
+</svg>
+</div>
+</div>
+<!-- Floating Controls -->
+<div class="absolute right-lg bottom-lg flex flex-col gap-sm">
+<div class="flex flex-col bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant overflow-hidden">
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-all border-b border-outline-variant">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+</div>
+<button class="w-12 h-12 bg-primary text-on-primary rounded-xl shadow-xl flex items-center justify-center hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="my_location" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+<button class="w-12 h-12 bg-surface-container-lowest text-on-surface rounded-xl shadow-xl flex items-center justify-center border border-outline-variant hover:bg-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+</div>
+<!-- Contextual Info Floating Tooltip -->
+<div class="absolute left-lg bottom-lg bg-surface/90 backdrop-blur-md p-md rounded-xl border border-outline-variant shadow-lg max-w-xs animate-in slide-in-from-bottom duration-500">
+<div class="flex items-center gap-md mb-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+</div>
+<span class="font-bold text-sm">Traffic Update</span>
+</div>
+<p class="text-sm text-on-surface-variant">Gate 1 currently has low wait times. Ideal entry point for your route.</p>
+</div>
+</main>
+</div>
+<!-- Hidden on Desktop, could show on small mobile but instructions were to convert to Desktop -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface border-t border-outline-variant shadow-lg rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-[10px] uppercase font-bold">Concierge</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary p-2">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-[10px] uppercase font-bold">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] uppercase font-bold">Alerts</span>
+</button>
+</nav>
+</body></html>

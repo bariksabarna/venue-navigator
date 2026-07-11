@@ -1,0 +1,50 @@
+[
+  {
+    "id": "evt-1",
+    "zone": "gate-3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "Gate 3 queue is very long right now — estimated 20+ minute wait. Gates 2 and 4 are faster alternatives.",
+    "updatedAt": "2026-07-11T18:20:00Z"
+  },
+  {
+    "id": "evt-2",
+    "zone": "gate-1",
+    "type": "congestion",
+    "severity": "low",
+    "message": "Gate 1 is flowing smoothly. Typical entry time under 5 minutes.",
+    "updatedAt": "2026-07-11T18:22:00Z"
+  },
+  {
+    "id": "evt-3",
+    "zone": "concourse-n",
+    "type": "announcement",
+    "severity": "medium",
+    "message": "North Concourse food court is temporarily out of hot food. Cold snacks and drinks remain available.",
+    "updatedAt": "2026-07-11T18:15:00Z"
+  },
+  {
+    "id": "evt-4",
+    "zone": "gate-5",
+    "type": "delay",
+    "severity": "medium",
+    "message": "Gate 5 security screening is running 10 minutes behind schedule due to equipment maintenance. Please allow extra time.",
+    "updatedAt": "2026-07-11T18:25:00Z"
+  },
+  {
+    "id": "evt-5",
+    "zone": "concourse-e",
+    "type": "weather",
+    "severity": "low",
+    "message": "Light rain expected around kick-off. East Concourse has covered standing areas available.",
+    "updatedAt": "2026-07-11T18:10:00Z"
+  },
+  {
+    "id": "evt-6",
+    "zone": "gate-4",
+    "type": "congestion",
+    "severity": "low",
+    "message": "Gate 4 is open and moving well. Recommended alternative to Gate 3 right now.",
+    "updatedAt": "2026-07-11T18:23:00Z"
+  }
+]
