@@ -269,4 +269,96 @@ describe('ChatConsole Component', () => {
     const input = screen.getByRole('textbox') as HTMLTextAreaElement;
     expect(input.value).toBe('Tell me about Gate 4');
   });
+
+  it('calls scrollIntoView when messages are added', async () => {
+    const scrollIntoViewMock = vi.fn();
+    // Assign mock before render so the ref picks it up
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+    const { rerender } = render(
+      <ChatConsole
+        messages={[]}
+        isLoading={false}
+        isOffline={false}
+        sendMessage={vi.fn()}
+        clearMessages={vi.fn()}
+        isDeafProfile={false}
+      />
+    );
+
+    await act(async () => {
+      rerender(
+        <ChatConsole
+          messages={mockMessages}
+          isLoading={false}
+          isOffline={false}
+          sendMessage={vi.fn()}
+          clearMessages={vi.fn()}
+          isDeafProfile={false}
+        />
+      );
+    });
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
+  });
+
+  it('sets input from voice transcript via VoiceInputButton onTranscript callback', async () => {
+    // Enable SpeechRecognition so VoiceInputButton renders its button
+    const mockRecognition = {
+      start: vi.fn(),
+      stop: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      abort: vi.fn(),
+      continuous: false,
+      interimResults: false,
+      lang: '',
+      onresult: null,
+      onerror: null,
+      onend: null,
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).SpeechRecognition = vi.fn(() => mockRecognition);
+
+    render(
+      <ChatConsole
+        messages={[]}
+        isLoading={false}
+        isOffline={false}
+        sendMessage={vi.fn()}
+        clearMessages={vi.fn()}
+        isDeafProfile={false}
+      />
+    );
+
+    // Simulate a voice result by calling the onresult handler directly
+    const voiceBtn = screen.getByRole('button', { name: /start voice input/i });
+    fireEvent.click(voiceBtn);
+
+    // Simulate speech recognition result with isFinal: true
+    await act(async () => {
+      if (mockRecognition.onresult) {
+        const mockEvent = {
+          resultIndex: 0,
+          results: {
+            length: 1,
+            0: {
+              isFinal: true,
+              0: { transcript: 'where is the exit' },
+            },
+          },
+        };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (mockRecognition.onresult as any)(mockEvent);
+      }
+    });
+
+    const input = screen.getByRole('textbox') as HTMLTextAreaElement;
+    expect(input.value).toBe('where is the exit');
+
+    // cleanup
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).SpeechRecognition = undefined;
+  });
 });
+
